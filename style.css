@@ -1,1 +1,27 @@
+#myCanvas {
+    position: relative;
+    top: 450px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw;
+    height: 50vh;
+    width: 1000px;
+    height: 800px;
+    border: 2px solid #000000;
+}
 
+#topScore {
+    position: relative;
+    font-size: 40px;
+    font-family: courier;
+    bottom: 700px;
+    left: 500px;
+}
+
+#bottomScore {
+    position: relative;
+    font-size: 40px;
+    font-family: courier;
+    top: 30px;
+    left: 470px;
+}
