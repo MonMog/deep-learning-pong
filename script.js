@@ -13,7 +13,7 @@ let playerPaddle = {
     y: canvas.height - 30,
     width: 100,
     height: 10,
-    speed: 7,
+    speed: 3,
     dx: 0, 
 };
 
@@ -38,6 +38,19 @@ let ball = {
 function drawPaddle(paddle) {
     ctx.fillStyle = "black";
     ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+}
+
+function moveAIPaddle() {
+    setTimeout(function() {
+        if (ball.x < enemyPaddle.x + enemyPaddle.width / 2) {
+            enemyPaddle.dx = -enemyPaddle.speed; 
+        } else if (ball.x > enemyPaddle.x + enemyPaddle.width / 2) {
+            enemyPaddle.dx = enemyPaddle.speed; 
+        } else {
+            enemyPaddle.dx = 0; 
+        }
+        enemyPaddle.x += enemyPaddle.dx;
+    }, 1000);
 }
 
 function drawBall() {
