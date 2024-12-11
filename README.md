@@ -7,5 +7,5 @@ Filler filler filer
 
 
 # Credit
-big shoutout to https://github.com/wagenaartje/neataptic , would not be possible with this repo
-another big shoutout to https://github.com/zonetti/snake-neural-network , as its been a great resource
+- https://github.com/wagenaartje/neataptic
+- https://github.com/zonetti/snake-neural-network
