@@ -9,12 +9,19 @@
 </head>
 <body>
 
-    <canvas id="myCanvas" width = "1000" height = "1000">
-    </canvas>
+    <div id="game-container">
+    </div>
 
-    <p1 id="topScore">0</p1>
-    <p1 id="bottomScore">0</p1>
+    <div>
+        <span id="generation" data-value="0">Generation: <span class="value">0</span></span><br>
+        <span id="highestFittestScore" data-value="0">Highest Fittest Score: <span class="value">0</span></span><br>
+        <span id="AverageFittestScore" data-value="0">Average Fittest Score: <span class="value">0</span></span><br>
+        <span id="lowestFittestScore" data-value="0">Lowest Fittest Score: <span class="value">0</span></span><br>
+        <span>List of current fitness: <span id="fitnessList"></span></span>
+    </div>
 
+
+    <script src="https://wagenaartje.github.io/neataptic/cdn/1.4.7/neataptic.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
