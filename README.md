@@ -33,6 +33,8 @@ Now that we have the Pong class setup for running the simulation, we need to act
 - Surviving for a frame: 0.1 points
 - Having the ball within the range of the paddle's width: 0.1 points
 
+I do admit that I am not the best at determining the scaling for the points, but it is a good starting point and has worked well for me.
+
 # Credit
 - https://github.com/wagenaartje/neataptic
 - https://github.com/zonetti/snake-neural-network
