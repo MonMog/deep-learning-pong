@@ -1,6 +1,8 @@
 # Description
 This project is a JS implementation of the classic game Pong that learns to play using the NEAT algorithm. For handling the neural networks and NEAT, I used the [Neataptic Library](https://github.com/wagenaartje/neataptic). The way this project works is that there is an enemy paddle, the top paddle, that follows the logic of trying to keep its origin of the paddle centered on the ball. The player paddle, the bottom paddle, is the one that is being controlled by the neural network and is trying to learn how to play the game. Its main way of learning is through the fitness score and depending on how well it performs, its genes can carry into the next generation. Overtime, the player paddle learns how to play more efficiently and is able to play better.
 
+Check it out here! https://monmog.github.io/deep-learning-pong-neat-js/
+
 
 # How it works
 
