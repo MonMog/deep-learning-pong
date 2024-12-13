@@ -44,7 +44,13 @@ I do admit that I am not the best at determining the scaling for the points, but
             mutationRate: .5,
             mutationAmount: 3
           }`
-The first value, 7, represents how many input nodes the neural network will have while the next value, 1, represents how many output nodes it will have. I wish I could tell you what the null does.
+The first value, 7, represents how many input nodes the neural network will have while the next value, 1, represents how many output nodes it will have. I wish I could tell you what the null does. The reason that I put 7 input nodes is because in the Pong Class, the method processNetworkOutput(), has an array of input data that it will use to determine its output. As listed, its the following information it bases it output on:
+- Ball position (X & Y)
+- Ball Speed (X & Y)
+- Player Paddle X position
+- Enemy Paddle X position & speed
+
+Time willing, I hopefully want to be able to actually show the real-time values of the neural network for each of these input nodes so that we can see the output node. Speaking of the output node, it only has 1 output node, how can we use that to determine 3 different actions for the paddle? We want to train the output node to give a value between 0 and 1, with 0 - 0.3 being move left, 0.3 - .6 is not move and the rest will be move right. Each frame, each of the 7 inputs will be different from the last frame, so that means each of the nodes will have a different value, thus a different output node. 
 
 # Credit
 - https://github.com/wagenaartje/neataptic
