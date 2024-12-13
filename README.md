@@ -37,7 +37,14 @@ Now that we have the Pong class setup for running the simulation, we need to act
 - Surviving for a frame: 0.1 points
 - Having the ball within the range of the paddle's width: 0.1 points
 
-I do admit that I am not the best at determining the scaling for the points, but it is a good starting point and has worked well for me.
+I do admit that I am not the best at determining the scaling for the points, but it is a good starting point and has worked well (so far) for me. After we get the fitness score of each of the games, we sort the population. With some sorting and some basic for loops to find the sum and highest and lowest fitness of the population. We now need to make a new generation so the next generation can take over the neural network and learn. If you have elitism, which I have for 20% of my popsize, we will first append them to the list. The remaining will be the elitism - popsize and we will append the offspring of their neural networks. We assign the population to the new generation and then we mutate. Notice how it does not have some type of end condition as it will just keep repeating until you are happy with the results, or just happy. To finally wrap it up, we need to define one last thing. Calling neataptic.neat to define the neural network, it will look something like this 
+        `return new neataptic.Neat(7, 1, null, {
+            popsize: popsize,
+            elitism: Math.floor(popsize * 0.2),
+            mutationRate: .5,
+            mutationAmount: 3
+          }`
+The first value, 7, represents how many input nodes the neural network will have while the next value, 1, represents how many output nodes it will have. I wish I could tell you what the null does.
 
 # Credit
 - https://github.com/wagenaartje/neataptic
