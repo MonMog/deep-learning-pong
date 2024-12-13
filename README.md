@@ -3,6 +3,10 @@ This project is a JS implementation of the classic game Pong that learns to play
 
 Check it out here! https://monmog.github.io/deep-learning-pong-neat-js/
 
+<p align="center">
+  <img src="https://github.com/MonMog/deep-learning-pong-neat-js/blob/main/PongDemo.gif" width="100%">
+</p>
+
 
 # How it works
 
