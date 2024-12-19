@@ -177,7 +177,7 @@
 
 
 class Pong {
-    constructor(canvas) {
+    constructor(canvas, paddleSpeed, paddleWidth, ballSpeed) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.playerScore = 0;
@@ -190,14 +190,17 @@ class Pong {
         this.stuckFrames = 0;
         this.lastPaddleX = 0;
 
+        this.averageSpeed = ballSpeed;
+
         this.playerPaddle = {
-            x: canvas.width / 2 - 50,
+            x: canvas.width / 2 - paddleWidth / 2,
             y: canvas.height - 30,
-            width: 100,
+            width: paddleWidth, // default was 100
             height: 10,
-            speed: 11,
+            speed: paddleSpeed,
             dx: 0
         };
+        
 
         this.enemyPaddle = {
             x: canvas.width / 2 - 50,
@@ -212,9 +215,9 @@ class Pong {
             x: canvas.width / 2,
             y: canvas.height / 2,
             radius: 10,
-            dx: 5,
-            dy: 5,
-            maxSpeed: 4
+            dx: ballSpeed,
+            dy: ballSpeed,
+            maxSpeed: ballSpeed + 1 // dx and dy were 5 i think i just forgot, probably was 4 then 5
         };
     }
 
@@ -244,7 +247,7 @@ class Pong {
 
     resetBall() {
         this.isGameOver = true;
-        const speed = 3;
+        const speed = this.averageSpeed;
         const angle = Math.random() * Math.PI / 3 + Math.PI / 3; 
 
         this.ball.x = this.canvas.width / 2;
@@ -262,8 +265,6 @@ class Pong {
         if (Math.abs(this.ball.dy) > this.ball.maxSpeed) {
             this.ball.dy = this.ball.maxSpeed * (this.ball.dy > 0 ? 1 : -1);
         }
-
-        // this.playerPaddle.x = this.canvas.width / 2 - this.playerPaddle.width / 2;
     }
 
     resetGame() {
@@ -284,7 +285,7 @@ class Pong {
         }
 
     resetBallIfPlayerWon() {
-        const speed = 3;
+        const speed = this.averageSpeed;
         const angle = Math.random() * Math.PI / 3 + Math.PI / 3;
 
         this.ball.x = this.canvas.width / 2;
@@ -311,15 +312,17 @@ class Pong {
             this.ball.y / this.canvas.height,
             this.ball.dx / this.ball.maxSpeed,
             this.ball.dy / this.ball.maxSpeed,
-            this.playerPaddle.x / this.canvas.width,
-            this.enemyPaddle.x / this.canvas.width,
-            this.enemyPaddle.dx / this.enemyPaddle.speed
+            (this.ball.x - this.playerPaddle.x) / (this.canvas.width - this.playerPaddle.width), // distance from ball to paddle
+            (this.ball.y - this.playerPaddle.y) / (this.canvas.height - this.playerPaddle.height), // distance from ball to paddle
+            (this.ball.x - this.canvas.width) / this.canvas.width, // distance from top
+            (this.ball.y - this.canvas.height) / this.canvas.height // distance from bottom
         ];
+
 
         const output = this.network.activate(inputs);
 
-        const decision = (output[0])
-        console.log(decision);
+        const decision = output[0];
+        // console.log(decision);
 
         if (decision < 0.3) {
             this.playerPaddle.dx = -this.playerPaddle.speed; // go left
@@ -333,17 +336,17 @@ class Pong {
     calculateFitness() {
         let fitness = 0;
     
-        fitness += this.playerScore * 1; // 1 point per player point
+        fitness += this.playerScore * 5; // 1 point per player point
         fitness -= this.enemyScore * 0.5;  // -0.5 points per enemy point
     
-        fitness += (this.framesSurvived / 60) * 0.1; // 0.1 points per second survived
-        fitness += this.framesBallInPaddleRange * 0.1; // 0.1 points per frame in range
+        // fitness += (this.framesSurvived / 60) * 0.1; // 0.1 points per second survived
+        // fitness += this.framesBallInPaddleRange * 0.1; // 0.1 points per frame in range
     
         fitness += this.successfulHits * 0.5; // 0.5 points per successful hit
     
-        if (this.stuckFrames > 270) { // 60 frames is 1 second i think, so this should be 4ish seconds
-            fitness -= 20; 
-        }
+        // if (this.stuckFrames > 270) { // 60 frames is 1 second i think, so this should be 4ish seconds
+        //     fitness -= 20; 
+        // }
         // just please move
     
         return fitness;
@@ -475,15 +478,18 @@ class Pong {
 
 
 class Runner {
-    constructor({ neat, numGames, onEndGeneration }) {
+    constructor({ neat, numGames, onEndGeneration, paddleSpeed, paddleWidth, ballSpeed }) {
         this.neat = neat;
         this.games = [];
         this.gamesFinished = 0;
         this.onEndGeneration = onEndGeneration;
+        this.paddleSpeed = paddleSpeed;
+        this.paddleWidth = paddleWidth;
+        this.ballSpeed = ballSpeed;
 
         for (let i = 0; i < numGames; i++) {
             this.games.push(
-                new Pong (document.getElementById(`game${this.games.length + 1}`))
+                new Pong (document.getElementById(`game${i + 1}`), this.paddleSpeed, this.paddleWidth, this.ballSpeed)
             );
         }
 
@@ -519,22 +525,17 @@ class Runner {
             const game = this.games[i];
             const fitness = game.calculateFitness(); 
             game.network.score = fitness; 
-            fitnessList.push(fitness);
         }
-
-        document.getElementById("fitnessList").innerHTML = `${fitnessList.join(", ")}`;
-
 
         this.neat.sort();
 
         let sum = 0;
-        for (let i = 0; i < this.neat.population.length; i++) {
-            sum += this.neat.population[i].score;
-        }
-
         let fittest = this.neat.population[0];
         let lowest = this.neat.population[0];
+
         for (let i = 1; i < this.neat.population.length; i++) {
+            sum += this.neat.population[i].score;
+
             if (this.neat.population[i].score > fittest.score) {
                 fittest = this.neat.population[i];
             }
@@ -552,21 +553,27 @@ class Runner {
 
         
 
-        const newGeneration = [];
-
+        const elitism = [];
         for (let i = 0; i < this.neat.elitism; i++) {
-            newGeneration.push(this.neat.population[i]);
+            elitism.push(this.neat.population[i]);
         }
 
+        const newGeneration = [];
         for (let i = 0; i < this.neat.popsize - this.neat.elitism; i++) {
             newGeneration.push(this.neat.getOffspring())
         }
 
         this.neat.population = newGeneration;
         this.neat.mutate();
+
+        for (let i = 0; i < elitism.length; i++) {
+            this.neat.population.unshift(elitism[i]);
+        }
+
         this.neat.generation++;
         this.startGeneration();
     }
+
 
 
     start() {
@@ -574,20 +581,18 @@ class Runner {
     }
 }
 
-
+ 
 document.addEventListener("DOMContentLoaded", function() {
     const gameContainer = document.getElementById("game-container");
-    const AmountofGames = 50;
 
 
     function createNeat(popsize) {
-        return new neataptic.Neat(7, 1, null, {
+        return new neataptic.Neat(8, 1, null, {
             popsize: popsize,
             elitism: Math.floor(popsize * 0.2),
-            mutationRate: .5,
-            mutationAmount: 3
-          }
-        );
+            mutationRate: 0.5,
+            mutationAmount: 3,
+            crossoverRate: 0.5,});
     }
 
     function createCanvases(numGames) {
@@ -600,10 +605,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    function setupNeat(neat) {
+    function setupNeat(neat, numGames, paddleSpeed, paddleWidth, ballSpeed) {
         const runner = new Runner({
             neat,
-            numGames: AmountofGames,
+            numGames,
+            paddleSpeed,
+            paddleWidth,
+            ballSpeed,
             onEndGeneration: (stats) => {
                 document.getElementById("generation").innerHTML = `Generation: ${stats.generation}`;
                 document.getElementById("highestFittestScore").innerHTML = `Highest Fittest Score: ${stats.max}`;
@@ -611,12 +619,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("lowestFittestScore").innerHTML = `Lowest Fittest Score: ${stats.min}`;
             }
         });
-        runner.start();
+        runner.start();                 
     }
 
-    createCanvases(AmountofGames);
-    const neat = createNeat(AmountofGames);
-    setupNeat(neat);
+
+    document.getElementById("startButton").addEventListener("click", () => {
+        const paddleSpeed = parseFloat(document.getElementById("paddleSpeed").value);
+        const paddleWidth = parseFloat(document.getElementById("paddleWidth").value);
+        const ballSpeed = parseFloat(document.getElementById("ballSpeed").value);
+        const amountOfGames = parseInt(document.getElementById("amountOfGames").value);
+        
+
+        createCanvases(amountOfGames);
+        const neat = createNeat(amountOfGames);
+        setupNeat(neat,amountOfGames, paddleSpeed, paddleWidth, ballSpeed);
+    });
 });
 
 
