@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://wagenaartje.github.io/neataptic/cdn/1.4.7/neataptic.js"></script>
+    <script src="script.js"></script>
     <title>Pong TIME!!!</title>
 </head>
 <body>
@@ -12,16 +14,26 @@
     <div id="game-container">
     </div>
 
+    <div id="Values">
+        <label for="paddleSpeed">Paddle Speed:</label>
+        <input type="range" id="paddleSpeed" name="paddleSpeed" min="1" max="20" value="11"><br>
+        <label for="paddleWidth">Paddle Width:</label>
+        <input type="range" id="paddleWidth" name="paddleWidth" min="10" max="200" value="100"><br>
+        <label for="ballSpeed">Ball Speed:</label>
+        <input type="range" id="ballSpeed" name="ballSpeed" min="1" max="20" value="5"><br>
+        <label for="amountOfGames">Amount of Games:</label>
+        <input type="number" id="amountOfGames" name="amountOfGames" min="1" max="200" value="16"><br>
+    </div>
+    
+
     <div>
+        <button id="startButton">Start</button>
         <span id="generation" data-value="0">Generation: <span class="value">0</span></span><br>
         <span id="highestFittestScore" data-value="0">Highest Fittest Score: <span class="value">0</span></span><br>
         <span id="AverageFittestScore" data-value="0">Average Fittest Score: <span class="value">0</span></span><br>
         <span id="lowestFittestScore" data-value="0">Lowest Fittest Score: <span class="value">0</span></span><br>
-        <span>List of current fitness: <span id="fitnessList"></span></span>
+        <span style="display:none">List of current fitness: <span id="fitnessList"></span></span>
     </div>
 
-
-    <script src="https://wagenaartje.github.io/neataptic/cdn/1.4.7/neataptic.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>
